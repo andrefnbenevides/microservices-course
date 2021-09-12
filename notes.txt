@@ -1,0 +1,61 @@
+####################################################################################################################################
+#######################				                                                             #######################
+#######################				        KUBERNETES				             #######################
+#######################				                                                             #######################	
+####################################################################################################################################
+
+###########################
+###
+### Set up a pod
+###
+###########################
+
+In the root of your project/solution create a folder named K8S, this file will contain our kubernetes files
+Create a file inside K8S named: platforms-depl.yaml
+Configure this file as necessary.
+
+To deploy your platforms service, run the following command inside the K8S folder:
+	> kubectl apply -f playforms-depl.yaml.
+
+----
+
+To verify if it was deployed successfully run the command:
+	> kubectl get deployments
+
+You should be able to see platforms-depl there, notice that READY is 0/1 that means that the container is still not running
+Dont worry kubernetes is attempting to run it.
+
+To get the pods for your platform-depl run:
+
+	> kubectl get pods
+
+Hopefully by now if you run again the get deplyoments you will see that it is now READY (1/1)
+This means that kubernetes has managed to get the container to run.
+
+If you destroy the deployed container. (IE delete it in docker desktop app)
+Kubernetes will restore the container. 
+This happens because we specified in the yaml file that we need to have 1 replica running at all times. 
+So kubernetes will attempto keep one replica always running.
+
+
+If you want to delete your deployment successfully without having kubernetes attempt to restore it automatically
+you can do so by running the delete command:
+	> kubectl delete deployment <your-deployment>
+
+To make sure you get the right deployment first run:
+	> kubectl get deployments
+
+Check the name of the deployment you want to delete, in this case assum its name is "platforms-depl", then run:
+	> kubectl delete deployment platforms-depl
+	
+
+###########################
+###
+### Set up a node port
+###
+###########################
+
+Create a file named platforms-np-srv.yaml inside K8S
+
+After creating the file run:
+	> kubectl apply -f platforms-np-srv.yaml
