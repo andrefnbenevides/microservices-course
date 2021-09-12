@@ -59,3 +59,6 @@ Create a file named platforms-np-srv.yaml inside K8S
 
 After creating the file run:
 	> kubectl apply -f platforms-np-srv.yaml
+
+To make sure that your service is created you can run:
+	> kubectl get services
