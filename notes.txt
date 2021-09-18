@@ -1,7 +1,7 @@
 ####################################################################################################################################
-#######################				                                                             #######################
-#######################				        KUBERNETES				             #######################
-#######################				                                                             #######################	
+#######################				                                                                         #######################
+#######################			                        	        KUBERNETES			     	             #######################
+#######################				                                                                         #######################	
 ####################################################################################################################################
 
 ###########################
@@ -62,3 +62,30 @@ After creating the file run:
 
 To make sure that your service is created you can run:
 	> kubectl get services
+
+
+####################################################################################################################################
+#######################				                                                                         #######################
+#######################			                        	        Messaging			     	             #######################
+#######################				                                                                         #######################	
+####################################################################################################################################
+
+***
+** Synchronous Messaging
+***
+Request/Response cycle
+Requester waits for response
+Externally facing services are usually synchronous 
+Services usually need to know about each other
+Some forms of synchronous commuinication: http and grpc
+Can cause inter-service dependency chains
+
+***
+** Asynchronous Messaging
+***
+No Request/Response cycle
+Request does not wait for response
+Data is transfered by eventing. (e.g. pub-sub)
+Event bus is usually used (e.g. rabbitmq)
+Services are unaware of each other, only the event bus knows where are the services
+Good but not perfect, introduces other complexities and issues that do not exist in synchronous messaging
