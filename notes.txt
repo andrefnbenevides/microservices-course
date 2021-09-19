@@ -108,3 +108,60 @@ Data is transfered by eventing. (e.g. pub-sub)
 Event bus is usually used (e.g. rabbitmq)
 Services are unaware of each other, only the event bus knows where are the services
 Good but not perfect, introduces other complexities and issues that do not exist in synchronous messaging
+
+
+
+
+####################################################################################################################################
+#######################				                                                                         #######################
+#######################					             Building an API Gateway			     	             #######################
+#######################				                                                                         #######################	
+####################################################################################################################################
+
+
+###########################
+###
+### Setup ingress-nginx deployment
+###
+###########################
+
+you can use ingress nginx (reads as engine x).
+Go to https://github.com/kubernetes/ingress-nginx and search for the Getting Started link.
+It will forward you to the installation guide of the ingress nginx, at this time you should pick whatever is what you are using.
+If you are just building the app on your pc, you will probably be using docker desktop so click on that link.
+
+	> kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
+
+You will notice that if you do :
+	> kubectl get deployments
+	> kubectl get pods
+That you will not be able to see any pods or deployments of nginx, that is because kubernetes uses namespaces
+and when we ran those commands those were ran on the "default" namespace, which is the namespace that you have been working it since the beginning
+
+if we run:
+	> kubectl get namespace
+
+You will see all the existing namespaces, including one "ingress-nginx"
+So, to be able to see the pods and deployments of ingress-nginx we need to type the command like so:
+	> kubectl get pods --namespace=ingress-nginx
+
+Generic command:
+	> kubectl get pods --namespace=<namespace-you-want-to-see>
+
+This is all you need to do to create a load balancer/API Gateway, now we need to creating the routing so that the ingress-nginx knows
+where to it should route traffic.
+
+
+###########################
+###
+### Create routing  for ingress-nginx
+###
+###########################
+
+Inside your K8S folder, create a new file named 'ingress-srv.yaml'
+Configure it accordingly to the services you have and want to route to.
+
+After that we need to open our hosts file to redirect traffic from acme.com to the loopback ip
+
+
+
