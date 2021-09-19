@@ -64,6 +64,25 @@ To make sure that your service is created you can run:
 	> kubectl get services
 
 
+###########################
+###
+### Redeployment of app
+###
+###########################
+
+After making changes in your code you'll need to redeploy the image
+The following commands will build your image and push it to docker hub:
+	> docker build -t <your-dockerhub-id>/<your-service> .
+	> docker push <your-dockerhub-id>/<your-service>
+
+Once the image has been pushed to docker hub, you'll need to request your kubernetes instance to restart.
+This will force the instance to fetch the changes from docker hub before running again:
+	> kubectl rollout restart deployment <your-service>
+
+
+
+
+
 ####################################################################################################################################
 #######################				                                                                         #######################
 #######################			                        	        Messaging			     	             #######################
