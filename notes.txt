@@ -165,3 +165,35 @@ After that we need to open our hosts file to redirect traffic from acme.com to t
 
 
 
+
+
+###########################
+###
+### Storage
+###
+###########################
+
+1. Persistent Volume Claim
+2. Persistent Volume
+3. Storage Class
+
+
+Create a Persistent Volume Claim file named local-pvc.yaml
+run 
+	> kubectl apply -f local-pvc.yaml
+
+Now if you run the get pvc command you will see the pvc that you just created
+	> kubectl get pvc
+You should see something like this:
+NAME          STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+mssql-claim   Bound    pvc-09b3ef64-542d-4115-8b8d-0e65853f5d8d   200Mi      RWX            hostpath       72s
+
+Now lets create our secret password for our mssql instance, doing it in the command line will allow you to keep it secret as the alternative
+is to store the password in a file and by doing that everything becomes less secure.
+run
+	kubectl create secret generic mssql --from-literal=SA_PASSWORD="your-pass-here"
+
+With the pvc and secret created we can now start creating the yaml file for our database instance.
+Create a new file named mssql-plat-depl.yaml (this will be the platforms database)
+After creating the file, apply the yaml file:
+	> kubectl apply -f mssql-plat-depl.yaml
