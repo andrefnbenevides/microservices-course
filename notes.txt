@@ -197,3 +197,49 @@ With the pvc and secret created we can now start creating the yaml file for our 
 Create a new file named mssql-plat-depl.yaml (this will be the platforms database)
 After creating the file, apply the yaml file:
 	> kubectl apply -f mssql-plat-depl.yaml
+
+---------------
+
+After this we can start using the sqlserver for our production and development
+but in case you want to keep the inmemory database for development, there are a few steps taht you need to do:
+
+If you run:
+	> dotnet ef migrations add initialmigration
+
+You will see that you'll get an error and that is because EF thinks you are using InMemory database and he is correct
+But you will need those migrations for productions so we need to trick EF to think that we are using a database model that supports migrations.
+
+So to achieve this, go back to your code in Startup.cs and comment the references to the InMem database and just keep the UseSqlServer statement.
+Also comment the line PrepDb.PrepPopulation(app, _env.IsProduction());
+
+Now go to your appsettings.production.json file and copy the connectionstrings attribute to your development.json file.
+You need to do this because with the code that you are left with, on the startup the project iwll attempt to check the connectionstring from 
+the development file and it would not find it otherwise.
+
+On the pasted connectionstring, you need to replace the reference to your kubernetes container and change it to localhost
+
+After doing this you can run again the ef migrations command and you should see a new folder named 'Migrations' should have been generated for You
+with the steps on how to create our database.
+
+Once the migrations are done, uncomment the code that you previously commented back, save everything and now its time to update our docker image
+with our new code.
+
+Run 
+	> docker build -t <your-docker-id>/platformservice .
+	> docker push <your-docker-id>/platformservice
+
+If everything went OK without any errors, we should be able to see that our image is updated in docker hub.
+If you visit the website you'll see that your image should say that has been updated some seconds ago.
+
+With the docker image updated we now need to restart your kubernetes container because it is not aware that there is a new version.
+Everytime that a kubernetes container restarts, it searches for a new version (because we specified in our yaml file that it should use the latest verion always)
+So by restarting the container it should go and fetch the new updated docker image
+
+	> kubectl get deployments
+Search for the name of the deployment of the platforms service
+	> kubectl rollout restart deployment platforms-depl
+	> kubectl get pods
+
+Now depending on how fast you and your pc is, you should either see that the container is being created or that it has been created a couple of seconds/minutes ago.
+This means that the container has restarted successfully.
+
